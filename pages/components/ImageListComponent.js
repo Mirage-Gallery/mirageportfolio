@@ -43,10 +43,10 @@ function ImageListComponent({ imageMetadataArray }) {
         videoURI = "https://ipfs.io/ipfs/" + checkForIPFS[1];
       }
     }
-    console.log(metadata.name, nft.token_id);
-    console.log("nft data", nft);
-    console.log("metadata", metadata);
-    console.log(metadata.animation_url);
+    // console.log(metadata.name, nft.token_id);
+    // console.log("nft data", nft);
+    // console.log("metadata", metadata);
+    // console.log(metadata.animation_url);
     // constructing the new image metadata object
     return {
       title: metadata.name,

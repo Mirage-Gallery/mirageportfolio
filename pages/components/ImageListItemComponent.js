@@ -106,7 +106,7 @@ function ImageListItemComponent({ imgData }) {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Opensea Link
+                View on OpenSea
               </a>
             </Typography>
           </Box>
