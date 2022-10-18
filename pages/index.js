@@ -65,7 +65,7 @@ export default function Home() {
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <Grid sx={{ mt: 2 }}>
-          <ConnectButton />
+          <ConnectButton showBalance={false} chainStatus="none" />
         </Grid>
         <Grid sx={{ mt: 2 }}>{loadingImages ? <CircularProgress /> : ""}</Grid>
 
