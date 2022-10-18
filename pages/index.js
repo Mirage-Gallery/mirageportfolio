@@ -18,7 +18,7 @@ export default function Home() {
 
   const { address, isConnected } = useAccount({
     onConnect({ address, connector, isReconnected }) {
-      queryNFTdata("0x34c0a0bd8Ee3236D62f334094f9f098020A526f2"); // address
+      queryNFTdata(address); // address
     },
     onDisconnect() {
       setUsersNFTs(null);
