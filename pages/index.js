@@ -68,7 +68,7 @@ export default function Home() {
           <ConnectButton showBalance={false} chainStatus="none" />
         </Grid>
         <Grid sx={{ mt: 2 }}>{loadingImages ? <CircularProgress /> : ""}</Grid>
-
+      
         <ImageListComponent imageMetadataArray={usersNFTs} />
       </Grid>
     </div>

@@ -11,7 +11,6 @@ and set the variables:
 
 ```
 NEXT_PUBLIC_ENABLE_TESTNETS="true"
-NEXT_PUBLIC_InfuraApiKey="yourapikey"
 NEXT_PUBLIC_MORALIS_API_KEY="yourapikey"
 ```
 
