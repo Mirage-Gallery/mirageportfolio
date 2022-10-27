@@ -12,6 +12,9 @@ and set the variables:
 ```
 NEXT_PUBLIC_ENABLE_TESTNETS="true"
 NEXT_PUBLIC_MORALIS_API_KEY="yourapikey"
+SUPABASE_SERVICE_API_KEY="key"
+DATABASE_URL="url"
+NEXT_PUBLIC_DB_USERNAME_TABLE="projectname"
 ```
 
 Then, run the development server:
