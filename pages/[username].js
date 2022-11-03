@@ -33,7 +33,6 @@ export default function Home() {
 
     const l = response.data.result
 
-
     setUsersNFTs(l);
     setLoadingImages(false);
   }
@@ -87,7 +86,6 @@ export default function Home() {
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <Grid container justifyContent="flex-end" sx={{ mt: 2, ml: -10}}>
-          <ConnectButton showBalance={false} chainStatus="none" />
         </Grid>
         <Grid sx={{ mt: 2 }}>{loadingImages ? <CircularProgress /> : ""}</Grid>
 
