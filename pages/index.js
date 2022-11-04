@@ -5,7 +5,7 @@ import { useAccount, useSignMessage } from "wagmi";
 import { useEffect, useState } from "react";
 
 import ImageListComponent from "./components/ImageListComponent";
-import { CircularProgress, Grid } from "@mui/material";
+import { CircularProgress, Grid, Snackbar, Alert} from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import styles from '../styles/Home.module.css';
 
@@ -23,6 +23,7 @@ export default function Home() {
   const [loadingImages, setLoadingImages] = useState(false);
   const theme = useTheme();
   const [username, setUsername] = useState('');
+  const [snackbar, setSnackbar] = useState({ status: false});
   
   const { address, isConnected } = useAccount({
     onConnect({ address, connector, isReconnected }) {
@@ -45,7 +46,7 @@ export default function Home() {
 
   const { data: signedMessage, error, isLoading, signMessage } = useSignMessage({
       async onSuccess(data, variables) {
-        const response = await fetch(variables.endPoint, {
+        const response = await fetch(`${URL}/api/${variables.endPoint}`, {
             method: 'POST',
             cache: 'no-cache',
             headers: {'Content-Type': 'application/json'},
@@ -55,7 +56,21 @@ export default function Home() {
               ...variables.data
             }) 
         })
+        
         const json = await response.json();
+        if(json.success) {
+          setSnackbar({
+            status: true,
+            type: 'success',
+            message: variables.successMessage
+          })
+        } else if (!json.success){
+          setSnackbar({
+              status: true,
+              type: 'error',
+              message: variables.errorMessage
+          })
+        }
       },
     })
   
@@ -63,7 +78,9 @@ export default function Home() {
       const content = [address, username].join(':');
       signMessage({
         message: content,
-        endPoint: `${URL}/api/setUsername`
+        endPoint: `setUsername`,
+        successMessage: 'Username updated',
+        errorMessage: 'Username is already taken'
       })
   }
 
@@ -71,7 +88,9 @@ export default function Home() {
       const content = 'HIDEALL';
       signMessage({
           message: content,
-          endPoint: `${URL}/api/hideAll`,
+          endPoint: `hideAll`,
+          successMessage: 'All NFTs Hidden',
+          errorMessage: 'Action Failed - Please Try Again',
           data: {
             nfts: usersNFTs.map(x => ({token_id: x.token_id, token_address: x.token_address}))
           }
@@ -81,7 +100,9 @@ export default function Home() {
     const content = 'SHOWALL';
     signMessage({
         message: content,
-        endPoint: `${URL}/api/showAll`
+        endPoint: `showAll`,
+        successMessage: 'All NFTs Showing',
+        errorMessage: 'Action Failed - Please Try Again',
     })
 }
 
@@ -126,7 +147,9 @@ export default function Home() {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-
+        <Snackbar open={snackbar.status} autoHideDuration={3000} onClose={() => setSnackbar(snackbar.status) } anchorOrigin={{...{ vertical: 'top', horizontal: 'center' }}}>
+          <Alert severity={snackbar.type} sx={{ width: '100%' }}>{snackbar.message}</Alert>
+        </Snackbar>
 
         <Grid container justifyContent="flex-end" sx={{ mt: 2, ml: -10}}>
           { isConnected && (

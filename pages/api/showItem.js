@@ -17,7 +17,6 @@ export default async function handler(req, res) {
     const nftAddress = data[0]
     const nftId = data[1]
     
-    console.log('SHOW')
     const {data: result, error} = await supabase
         .from('hidden')
         .delete()
@@ -27,7 +26,6 @@ export default async function handler(req, res) {
             nftId: nftId
         })
     
-    console.log(result, error)
     if (!error) {
         res.status(200).json( { success: true })
     } else {

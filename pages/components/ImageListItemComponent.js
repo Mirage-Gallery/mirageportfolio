@@ -15,15 +15,16 @@ function ImageListItemComponent({ imgData, showUserAdminUi }) {
   };
   const handleClose = () => setOpen(false);
 
+  const {title, img, video, address, id} = imgData || { title: '', img: '', video: false, address : '', id: null}
   return (
     <ImageListItem cols={1}>
       <img
-        src={imgData.img}
-        alt={imgData.title}
+        src={img }
+        alt={title}
         style={{ borderRadius: theme.borderRadius.image, cursor: "pointer" }}
         onClick={handleOpen}
       />
-      {imgData.video ? (
+      {video ? (
         <PlayCircleFilledIcon
           sx={{
             fontSize: 64,
@@ -61,11 +62,11 @@ function ImageListItemComponent({ imgData, showUserAdminUi }) {
               p: 4,
             }}
           >
-            {imgData.video ? (
+            {video ? (
               <video
                 controls
                 autoPlay
-                src={imgData.video}
+                src={video}
                 loop
                 style={{
                   maxWidth: "80vw",
@@ -77,8 +78,8 @@ function ImageListItemComponent({ imgData, showUserAdminUi }) {
               </video>
             ) : (
               <img
-                src={imgData.img}
-                alt={imgData.title}
+                src={img}
+                alt={title}
                 style={{
                   maxWidth: "80vw",
                   maxHeight: "80vh",
@@ -94,7 +95,7 @@ function ImageListItemComponent({ imgData, showUserAdminUi }) {
               component="h2"
               sx={{ mt: 2, color: theme.palette.text.main }}
             >
-              Name: {imgData.title}
+              Name: {title}
             </Typography>
 
             <Typography
@@ -107,7 +108,7 @@ function ImageListItemComponent({ imgData, showUserAdminUi }) {
               }}
             >
               <a
-                href={`https://opensea.io/assets/ethereum/${imgData.address}/${imgData.id}`} /* {`https://opensea.io/collection/${openSeaLink}`} */
+                href={`https://opensea.io/assets/ethereum/${address}/${id}`} /* {`https://opensea.io/collection/${openSeaLink}`} */
                 target="_blank"
                 rel="noopener noreferrer"
               >
