@@ -14,6 +14,8 @@ import {
   getNFTdataByAddress,
 } from "../utils/helpers";
 
+const URL = process.env.NEXT_PUBLIC_URL;
+
 export default function Home() {
   const [usersNFTs, setUsersNFTs] = useState();
   const [mounted, setMounted] = useState(false);
@@ -37,7 +39,7 @@ export default function Home() {
 
   const { data: signedMessage, error, isLoading, signMessage } = useSignMessage({
     async onSuccess(data, variables) {
-      const response = await fetch(`/api/setUsername`, {
+      const response = await fetch(`${URL}/api/setUsername`, {
           method: 'POST',
           cache: 'no-cache',
           headers: {'Content-Type': 'application/json'},

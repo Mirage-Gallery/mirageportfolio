@@ -1,8 +1,10 @@
 import Moralis from "moralis";
 import { EvmChain } from "@moralisweb3/evm-utils";
 
+const URL = process.env.NEXT_PUBLIC_URL;
+
 export const getHiddenList = async (_address) => {
-    const response = await fetch(`/api/getHiddenList`, {
+    const response = await fetch(`${URL}/api/getHiddenList`, {
       method: 'POST',
       cache: 'no-cache',
       headers: {'Content-Type': 'application/json'},
@@ -14,7 +16,7 @@ export const getHiddenList = async (_address) => {
 }
 
 export const getAddressFromUsername = async (_username) => {
-    const response = await fetch(`/api/getUsername`, {
+    const response = await fetch(`${URL}/api/getUsername`, {
         method: 'POST',
         cache: 'no-cache',
         headers: {'Content-Type': 'application/json'},
