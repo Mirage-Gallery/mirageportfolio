@@ -12,6 +12,7 @@ and set the variables:
 ```
 NEXT_PUBLIC_ENABLE_TESTNETS="true"
 NEXT_PUBLIC_MORALIS_API_KEY="yourapikey"
+NEXT_PUBLIC_ALCHEMY_API_KEY="yourapikey"
 NEXT_PUBLIC_DB_USERNAME_TABLE="projectname"
 NEXT_PUBLIC_URL="http://localhost:3000"
 SUPABASE_SERVICE_API_KEY="key"
