@@ -38,24 +38,46 @@ export default function Home() {
   });
 
   const { data: signedMessage, error, isLoading, signMessage } = useSignMessage({
-    async onSuccess(data, variables) {
-      const response = await fetch(`${URL}/api/setUsername`, {
-          method: 'POST',
-          cache: 'no-cache',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({
-            message: variables.message,
-            signedMessage: data
-          }) 
+      async onSuccess(data, variables) {
+        const response = await fetch(variables.endPoint, {
+            method: 'POST',
+            cache: 'no-cache',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+              message: variables.message,
+              signedMessage: data,
+              ...variables.data
+            }) 
+        })
+        const json = await response.json();
+      },
+    })
+  
+  async function sendUpdateUsername(){
+      const content = [address, username].join(':');
+      signMessage({
+        message: content,
+        endPoint: `${URL}/api/setUsername`
       })
-      const json = await response.json();
-    },
-  })
-
-  async function send(){
-    const content = [address, username].join(':');
-    signMessage({message: content})
   }
+
+  async function hideAll(){
+      const content = 'HIDEALL';
+      signMessage({
+          message: content,
+          endPoint: `${URL}/api/hideAll`,
+          data: {
+            nfts: usersNFTs.map(x => ({token_id: x.token_id, token_address: x.token_address}))
+          }
+      })
+  }
+  async function showAll(){
+    const content = 'SHOWALL';
+    signMessage({
+        message: content,
+        endPoint: `${URL}/api/showAll`
+    })
+}
 
   useEffect(() => {
     if(usersNFTs){
@@ -105,15 +127,26 @@ export default function Home() {
           <div>
             <input
               className={styles.input}
-              placeholder="username"
+              placeholder={ username }
               value={username}
               name="username" onChange={e => setUsername(e.target.value)}
             />
             <button 
               className={styles.button}
-              onClick={() => send?.()}
+              onClick={() => sendUpdateUsername?.()}
             >
             Update
+            </button>
+
+            <button
+              className={styles.button}
+              onClick={() => hideAll?.()}>
+              Hide All
+            </button>
+            <button
+              className={styles.button}
+              onClick={() => showAll?.()}>
+              Show All
             </button>
           </div>)}
           <ConnectButton showBalance={false} chainStatus="none" />
