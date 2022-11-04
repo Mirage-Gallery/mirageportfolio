@@ -4,12 +4,15 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount, useSignMessage } from "wagmi";
 import { useEffect, useState } from "react";
 
-import Moralis from "moralis";
-import { EvmChain } from "@moralisweb3/evm-utils";
 import ImageListComponent from "./components/ImageListComponent";
 import { CircularProgress, Grid } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import styles from '../styles/Home.module.css';
+
+import {
+  getHiddenList,
+  getNFTdataByAddress,
+} from "../utils/helpers";
 
 export default function Home() {
   const [usersNFTs, setUsersNFTs] = useState();
@@ -20,7 +23,12 @@ export default function Home() {
   
   const { address, isConnected } = useAccount({
     onConnect({ address, connector, isReconnected }) {
-      queryNFTdata(address); // address
+      setLoadingImages(true);
+      getNFTdataByAddress(address, [])
+        .then( data => {
+          setUsersNFTs(data);
+          setLoadingImages(false);
+        })
     },
     onDisconnect() {
       setUsersNFTs(null);
@@ -47,21 +55,21 @@ export default function Home() {
     signMessage({message: content})
   }
 
-
-  async function queryNFTdata(_address) {
-    setLoadingImages(true);
-    await Moralis.start({
-      apiKey: process.env.NEXT_PUBLIC_MORALIS_API_KEY,
-      // ...and any other configuration
-    });
-    const response = await Moralis.EvmApi.nft.getWalletNFTs({
-      chain: EvmChain.ETHEREUM,
-      address: _address,
-    });
-
-    setUsersNFTs(response.data.result);
-    setLoadingImages(false);
-  }
+  useEffect(() => {
+    if(usersNFTs){
+      getHiddenList(address)
+      .then( hl => {
+        const list = usersNFTs.map(nft => {
+          if (hl.data.some( h => h.nftAddress == nft.token_address && h.nftId == nft.token_id)){
+            return {...nft, hidden: true};
+          } else {
+            return {...nft, hidden: false};
+          }
+        })
+        setUsersNFTs(list)
+      });
+    }
+  }, [usersNFTs]);
 
   // prevents hydration error
   useEffect(() => setMounted(true), []);
