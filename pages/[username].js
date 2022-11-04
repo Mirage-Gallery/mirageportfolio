@@ -1,7 +1,5 @@
 import Head from "next/head";
 
-import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { useAccount } from "wagmi";
 import { useEffect, useState } from "react";
 import { useRouter } from 'next/router'
 
@@ -10,56 +8,45 @@ import { EvmChain } from "@moralisweb3/evm-utils";
 import ImageListComponent from "./components/ImageListComponent";
 import { CircularProgress, Grid } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import {
+  getHiddenList,
+  getAddressFromUsername,
+  getNFTdataByAddress,
+} from "../utils/helpers";
 
 export default function Home() {
   const router = useRouter();
   const { username } = router.query
-
+  const [userAddress, setUserAddress] = useState('');
   const [usersNFTs, setUsersNFTs] = useState();
+  const [usersHiddenList, setUserHiddenList] = useState();
   const [mounted, setMounted] = useState(false);
   const [loadingImages, setLoadingImages] = useState(false);
   const theme = useTheme();
   
-  async function queryNFTdata(_address) {
-    setLoadingImages(true);
-    await Moralis.start({
-      apiKey: process.env.NEXT_PUBLIC_MORALIS_API_KEY,
-      // ...and any other configuration
-    });
-    const response = await Moralis.EvmApi.nft.getWalletNFTs({
-      chain: EvmChain.ETHEREUM,
-      address: _address,
-    });
-
-    const l = response.data.result
-
-    setUsersNFTs(l);
-    setLoadingImages(false);
-  }
-
+  getAddressFromUsername(username)
+    .then( result => setUserAddress(result.address) );
 
   useEffect( () => {
-    const getAddressFromUsername = async (username) => {
-      const response = await fetch(`/api/getUsername`, {
-          method: 'POST',
-          cache: 'no-cache',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({
-            username,
-          }) 
-      })
-      const j = await response.json();
-      queryNFTdata(j.address);
+    if(userAddress) {
+      getHiddenList(userAddress)
+        .then( hl => setUserHiddenList(hl.data))
     }
-  
-    if (username) {
-      getAddressFromUsername(username);
+  }, [userAddress]);
+
+  useEffect( () => {
+    if (usersHiddenList) {
+      setLoadingImages(true);
+      getNFTdataByAddress(userAddress, usersHiddenList)
+        .then( data => {
+          setUsersNFTs(data);
+          setLoadingImages(false);
+        })
     }
-  }, [username]);
+  }, [usersHiddenList]);
 
   // prevents hydration error
   useEffect(() => {
-    
     setMounted(true)
   }, []);
 
@@ -88,8 +75,7 @@ export default function Home() {
         <Grid container justifyContent="flex-end" sx={{ mt: 2, ml: -10}}>
         </Grid>
         <Grid sx={{ mt: 2 }}>{loadingImages ? <CircularProgress /> : ""}</Grid>
-
-        <ImageListComponent imageMetadataArray={usersNFTs} />
+        <ImageListComponent imageMetadataArray={usersNFTs} showAdditionalUi={false} />
       </Grid>
     </div>
   );

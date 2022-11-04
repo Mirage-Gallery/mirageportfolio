@@ -8,17 +8,16 @@ const {
 const supabase = createClient(DATABASE_URL, SUPABASE_SERVICE_API_KEY);
 
 export default async function handler(req, res) {
-    const { address } = req.body
+    const { username } = req.body
 
     const {data, error} = await supabase
         .from('username')
-        .select('username')
-        .eq('address', address)
+        .select('address')
+        .eq('username', username)
         .single()
     
-    console.log(data, error)
     if (!error) {
-        res.status(200).json( { success: true, username: data.username })
+        res.status(200).json( { success: true, address: data.address })
     } else {
         res.status(200).json( { success: false })
     }

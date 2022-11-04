@@ -24,3 +24,20 @@ a {
     background: black;
   }
 }
+
+.button {
+  margin-right: 1rem;
+  height: 100%;
+  cursor: pointer;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  font-size: 1rem;
+  font-weight: 700;
+  font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.customModalRoot {
+  backdrop-filter: blur(6px);
+}

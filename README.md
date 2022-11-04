@@ -12,9 +12,10 @@ and set the variables:
 ```
 NEXT_PUBLIC_ENABLE_TESTNETS="true"
 NEXT_PUBLIC_MORALIS_API_KEY="yourapikey"
+NEXT_PUBLIC_DB_USERNAME_TABLE="projectname"
+NEXT_PUBLIC_URL="http://localhost:3000"
 SUPABASE_SERVICE_API_KEY="key"
 DATABASE_URL="url"
-NEXT_PUBLIC_DB_USERNAME_TABLE="projectname"
 ```
 
 Then, run the development server:
@@ -36,3 +37,21 @@ npm run build
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+# Database Schema
+'username'
+
+| name                   | type    |
+|------------------------|---------|
+| username (primary key) | varchar |
+| address                | varchar |
+
+'hidden'
+| name             | type    |
+|------------------|---------|
+| id (primary key) | int8    |
+| address          | varchar |
+| nftAddress       | varchar |
+| nftId            | varchar |
+
+*note `nftId` needs to be varchar to accomodate tokens that use non numerical ids or Big Numbers 

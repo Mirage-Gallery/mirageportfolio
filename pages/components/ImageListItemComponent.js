@@ -5,11 +5,12 @@ import Backdrop from "@mui/material/Backdrop";
 import { useTheme } from "@mui/material/styles";
 import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
 
-function ImageListItemComponent({ imgData }) {
+import UserAdminUi from './UserAdminUi'
+
+function ImageListItemComponent({ imgData, showUserAdminUi }) {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
-    console.log(imgData);
     setOpen(true);
   };
   const handleClose = () => setOpen(false);
@@ -40,10 +41,14 @@ function ImageListItemComponent({ imgData }) {
       <Modal
         open={open}
         onClose={handleClose}
+        className={'customModalRoot'}
         BackdropComponent={Backdrop}
         BackdropProps={{
           timeout: 300,
-          style: { backgroundColor: "black", opacity: 0.75 },
+          style: {
+            backgroundColor: "black",
+            opacity: 0.75
+          },
         }}
       >
         <Fade in={open}>
@@ -108,6 +113,10 @@ function ImageListItemComponent({ imgData }) {
               >
                 View on OpenSea
               </a>
+
+              { showUserAdminUi && (
+                <UserAdminUi imgData={imgData} />
+              )} 
             </Typography>
           </Box>
         </Fade>

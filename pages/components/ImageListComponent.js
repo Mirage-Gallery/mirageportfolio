@@ -4,7 +4,7 @@ import ImageList from "@mui/material/ImageList";
 import ImageListItemComponent from "./ImageListItemComponent";
 import { useTheme } from "@mui/material/styles";
 
-function ImageListComponent({ imageMetadataArray }) {
+function ImageListComponent({ imageMetadataArray, showUserAdminUi }) {
   const theme = useTheme();
   if (!imageMetadataArray) return;
 
@@ -54,6 +54,7 @@ function ImageListComponent({ imageMetadataArray }) {
       img: imageURI,
       video: videoURI,
       id: nft.token_id,
+      hidden: nft.hidden,
     };
   });
   // removing empty entries
@@ -83,7 +84,7 @@ function ImageListComponent({ imageMetadataArray }) {
         gap={15}
       >
         {imageListArray.map((item) => (
-          <ImageListItemComponent imgData={item} key={item.title} />
+          <ImageListItemComponent imgData={item} key={item.title + item.id} showUserAdminUi={showUserAdminUi}/>
         ))}
       </ImageList>
     </Box>
