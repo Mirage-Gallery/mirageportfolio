@@ -5,10 +5,14 @@ import "@rainbow-me/rainbowkit/styles.css";
 import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { defaultChains, configureChains, createClient, WagmiConfig } from "wagmi";
 import { publicProvider } from "wagmi/providers/public";
-
+import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
-const {provider, chains} = configureChains(defaultChains, [publicProvider()]);
+const {provider, chains} = configureChains(defaultChains, [
+  alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY }),
+  publicProvider()
+]);
+
 
 // rainbowkit
 const { connectors } = getDefaultWallets({
