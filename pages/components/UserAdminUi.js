@@ -4,7 +4,7 @@ import React from "react";
 const URL = process.env.NEXT_PUBLIC_URL;
 
 function UserAdminUi({imgData}) {
-    const {address: tokenAddress, id : tokenId, hidden} =  imgData;
+    const {address: tokenAddress , id : tokenId, hidden} =  imgData || { address : ''}
 
     const { data: signedMessage, error, isLoading, signMessage } = useSignMessage({
         async onSuccess(data, variables) {
