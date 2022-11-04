@@ -84,7 +84,7 @@ function ImageListComponent({ imageMetadataArray, showUserAdminUi }) {
         gap={15}
       >
         {imageListArray.map((item) => (
-          <ImageListItemComponent imgData={item} key={item.title} showUserAdminUi={showUserAdminUi}/>
+          <ImageListItemComponent imgData={item} key={item.title + item.id} showUserAdminUi={showUserAdminUi}/>
         ))}
       </ImageList>
     </Box>
