@@ -19,6 +19,6 @@ export default async function handler(req, res) {
     if (!error) {
         res.status(200).json( { success: true, address: data.address })
     } else {
-        res.status(500).json( { success: false })
+        res.status(200).json( { success: false })
     }
 }
