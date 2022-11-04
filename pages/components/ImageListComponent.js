@@ -54,6 +54,7 @@ function ImageListComponent({ imageMetadataArray, showAdditionalUi }) {
       img: imageURI,
       video: videoURI,
       id: nft.token_id,
+      hidden: nft.hidden,
     };
   });
   // removing empty entries
