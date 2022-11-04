@@ -16,7 +16,7 @@ export const getHiddenList = async (_address) => {
 }
 
 export const getAddressFromUsername = async (_username) => {
-    const response = await fetch(`${URL}/api/getUsername`, {
+    const response = await fetch(`${URL}/api/getUserAddress`, {
         method: 'POST',
         cache: 'no-cache',
         headers: {'Content-Type': 'application/json'},
