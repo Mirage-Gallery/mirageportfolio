@@ -16,7 +16,6 @@ export default async function handler(req, res) {
         .eq('address', address)
         .single()
     
-    console.log(data, error)
     if (!error) {
         res.status(200).json( { success: true, username: data.username })
     } else {
