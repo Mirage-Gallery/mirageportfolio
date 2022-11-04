@@ -159,7 +159,7 @@ export default function Home() {
         </Grid>
         <Grid sx={{ mt: 2 }}>{loadingImages ? <CircularProgress /> : ""}</Grid>
 
-        <ImageListComponent imageMetadataArray={usersNFTs} showAdditionalUi={true} />
+        <ImageListComponent imageMetadataArray={usersNFTs} showUserAdminUi={true} />
       </Grid>
     </div>
   );

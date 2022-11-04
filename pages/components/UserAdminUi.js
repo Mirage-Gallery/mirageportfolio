@@ -3,7 +3,7 @@ import React from "react";
 
 const URL = process.env.NEXT_PUBLIC_URL;
 
-function AdditionalUiComponent({imgData}) {
+function UserAdminUi({imgData}) {
     const {address: tokenAddress, id : tokenId, hidden} =  imgData;
 
     const { data: signedMessage, error, isLoading, signMessage } = useSignMessage({
@@ -18,7 +18,6 @@ function AdditionalUiComponent({imgData}) {
               }) 
           })
           const json = await response.json();
-          console.log(json)
         },
       })
       
@@ -71,4 +70,4 @@ function AdditionalUiComponent({imgData}) {
         </div>
     );
 }
-export default AdditionalUiComponent;
+export default UserAdminUi;

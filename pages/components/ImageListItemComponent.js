@@ -5,9 +5,9 @@ import Backdrop from "@mui/material/Backdrop";
 import { useTheme } from "@mui/material/styles";
 import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
 
-import AdditionalUi from './AdditionalUi'
+import UserAdminUi from './UserAdminUi'
 
-function ImageListItemComponent({ imgData, showAdditionalUi }) {
+function ImageListItemComponent({ imgData, showUserAdminUi }) {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
@@ -114,8 +114,8 @@ function ImageListItemComponent({ imgData, showAdditionalUi }) {
                 View on OpenSea
               </a>
 
-              { showAdditionalUi && (
-                <AdditionalUi imgData={imgData} />
+              { showUserAdminUi && (
+                <UserAdminUi imgData={imgData} />
               )} 
             </Typography>
           </Box>

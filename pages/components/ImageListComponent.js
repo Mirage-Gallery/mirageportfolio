@@ -4,7 +4,7 @@ import ImageList from "@mui/material/ImageList";
 import ImageListItemComponent from "./ImageListItemComponent";
 import { useTheme } from "@mui/material/styles";
 
-function ImageListComponent({ imageMetadataArray, showAdditionalUi }) {
+function ImageListComponent({ imageMetadataArray, showUserAdminUi }) {
   const theme = useTheme();
   if (!imageMetadataArray) return;
 
@@ -84,7 +84,7 @@ function ImageListComponent({ imageMetadataArray, showAdditionalUi }) {
         gap={15}
       >
         {imageListArray.map((item) => (
-          <ImageListItemComponent imgData={item} key={item.title} showAdditionalUi={showAdditionalUi}/>
+          <ImageListItemComponent imgData={item} key={item.title} showUserAdminUi={showUserAdminUi}/>
         ))}
       </ImageList>
     </Box>
