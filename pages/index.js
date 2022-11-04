@@ -12,6 +12,7 @@ import styles from '../styles/Home.module.css';
 import {
   getHiddenList,
   getNFTdataByAddress,
+  getUsernameFromAddress
 } from "../utils/helpers";
 
 const URL = process.env.NEXT_PUBLIC_URL;
@@ -30,6 +31,11 @@ export default function Home() {
         .then( data => {
           setUsersNFTs(data);
           setLoadingImages(false);
+        })
+      
+      getUsernameFromAddress(address)
+        .then( data => {
+          setUsername(data.username)
         })
     },
     onDisconnect() {
@@ -127,7 +133,7 @@ export default function Home() {
           <div>
             <input
               className={styles.input}
-              placeholder={ username }
+              placeholder={ username || "username"}
               value={username}
               name="username" onChange={e => setUsername(e.target.value)}
             />
