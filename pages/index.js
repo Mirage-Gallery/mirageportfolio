@@ -14,6 +14,7 @@ import {
   getNFTdataByAddress,
   getUsernameFromAddress
 } from "../utils/helpers";
+import { RESPONSE_LIMIT_DEFAULT } from "next/dist/server/api-utils";
 
 const URL = process.env.NEXT_PUBLIC_URL;
 
@@ -40,7 +41,7 @@ export default function Home() {
         })
     },
     onDisconnect() {
-      setUsersNFTs(null);
+      setUsersNFTs(null); 
     },
   });
 
@@ -106,17 +107,29 @@ export default function Home() {
     })
 }
 
-async function getLink(){
-  getUsernameFromAddress(address)
-        .then( data => {
-          {navigator.clipboard.writeText(URL + '/' + data.username)}
-        })
-        setSnackbar({
-          status: true,
-          type: 'success',
-          message: 'Link copied to clipboard'
-        })
+async function getLink() {
+  const username = getUsernameFromAddress(address)
+  .then(data => {return data.username})
+  const copyAddress = async () => {
+    const a = await username;
+    if (a != undefined){
+      {navigator.clipboard.writeText(URL + '/' + a)}
+      setSnackbar({
+        status: true,
+        type: 'success',
+        message: 'Link copied to clipboard'
+      })
+    } else {
+      setSnackbar({
+        status: true,
+        type: 'error',
+        message: 'Set a username first'
+      })
+    }
+  }
+  copyAddress()
 }
+
 
   useEffect(() => {
     if(usersNFTs){
@@ -176,7 +189,7 @@ async function getLink(){
               className={styles.button}
               onClick={() => sendUpdateUsername?.()}
             >
-            Update
+            Update Username
             </button>
 
             <button
