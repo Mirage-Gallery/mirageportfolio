@@ -14,6 +14,14 @@ export default async function handler(req, res) {
     const signerAddress = ethers.utils.verifyMessage(message, signedMessage);
     const username = message.split(':')[1]
 
+    const {data: usernameExists} = await supabase
+        .from('username')
+        .select()
+        .eq('username', username)
+        .single()
+
+    if(usernameExists) return res.status(500).json( { success: false })
+
     const {data, error} = await supabase
         .from('username')
         .upsert({
