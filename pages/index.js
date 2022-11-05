@@ -41,7 +41,7 @@ export default function Home() {
         })
     },
     onDisconnect() {
-      setUsersNFTs(null); 
+      setUsersNFTs([]); 
     },
   });
 
