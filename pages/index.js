@@ -106,6 +106,18 @@ export default function Home() {
     })
 }
 
+async function getLink(){
+  getUsernameFromAddress(address)
+        .then( data => {
+          {navigator.clipboard.writeText(URL + '/' + data.username)}
+        })
+        setSnackbar({
+          status: true,
+          type: 'success',
+          message: 'Link copied to clipboard'
+        })
+}
+
   useEffect(() => {
     if(usersNFTs){
       getHiddenList(address)
@@ -176,6 +188,11 @@ export default function Home() {
               className={styles.button}
               onClick={() => showAll?.()}>
               Show All
+            </button>
+            <button
+              className={styles.button}
+              onClick={() => getLink()}>
+              Copy Shareable Link
             </button>
           </div>)}
           <ConnectButton showBalance={false} chainStatus="none" />
