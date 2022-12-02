@@ -2,6 +2,8 @@ import Moralis from "moralis";
 import { EvmChain } from "@moralisweb3/common-evm-utils";
 
 const URL = process.env.NEXT_PUBLIC_URL;
+Moralis.start({ apiKey: process.env.NEXT_PUBLIC_MORALIS_API_KEY });
+
 
 export const getHiddenList = async (_address) => {
     const response = await fetch(`${URL}/api/getHiddenList`, {
@@ -40,12 +42,10 @@ export const getUsernameFromAddress = async (_address) => {
 }
 
 export const getNFTdataByAddress = async (_address, _hiddenList) => {
-    await Moralis.start({ apiKey: process.env.NEXT_PUBLIC_MORALIS_API_KEY });
     const response = await Moralis.EvmApi.nft.getWalletNFTs({
       chain: EvmChain.ETHEREUM,
       address: _address,
     });
-
     return response.jsonResponse.result.filter( result => {
       return !_hiddenList
         .some( hidden => hidden.nftAddress == result.token_address && hidden.nftId == result.token_id)
