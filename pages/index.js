@@ -228,8 +228,8 @@ async function resetNFTStatus() {
         alignItems="center"
       >
         <Head>
-          <title>NFTGallery</title>
-          <meta name="description" content="NFTGallery" />
+          <title>Mirage Portfolio</title>
+          <meta name="description" content="Mirage Portfolio" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
