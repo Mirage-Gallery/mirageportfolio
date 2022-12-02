@@ -16,7 +16,7 @@ const {provider, chains} = configureChains(defaultChains, [
 
 // rainbowkit
 const { connectors } = getDefaultWallets({
-  appName: "NFTGallery",
+  appName: "Mirage Portfolio",
   chains,
 });
 // wagmi
