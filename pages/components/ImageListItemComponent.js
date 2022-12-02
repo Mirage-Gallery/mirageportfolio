@@ -77,8 +77,10 @@ function ImageListItemComponent({ imgData, showUserAdminUi }) {
                 Your browser does not support the video tag.
               </video>
             ) : (
+              
               <img
-                src={img}
+                src="Error.src" onerror="this.style.display='none'"
+                //src={img}
                 alt={title}
                 style={{
                   maxWidth: "80vw",
