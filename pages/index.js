@@ -19,26 +19,31 @@ import { RESPONSE_LIMIT_DEFAULT } from "next/dist/server/api-utils";
 const URL = process.env.NEXT_PUBLIC_URL;
 
 export default function Home() {
-  const [usersNFTs, setUsersNFTs] = useState();
+  const [usersNFTs, setUsersNFTs] = useState([]);
   const [mounted, setMounted] = useState(false);
   const [loadingImages, setLoadingImages] = useState(false);
   const theme = useTheme();
   const [username, setUsername] = useState('');
   const [snackbar, setSnackbar] = useState({ status: false});
+  const [selectedNFTs, setSelectedNFTs] = useState([]);
+
   
   const { address, isConnected } = useAccount({
     onConnect({ address, connector, isReconnected }) {
       setLoadingImages(true);
+  
       getNFTdataByAddress(address, [])
         .then( data => {
-          setUsersNFTs(data);
-          setLoadingImages(false);
+          setHiddenList(address, data)
+            .then( dataInHidden => {
+              setUsersNFTs(dataInHidden)
+              setLoadingImages(false);
+            })
         })
-      
+
       getUsernameFromAddress(address)
-        .then( data => {
-          setUsername(data.username)
-        })
+        .then( data =>setUsername(data.username))
+
     },
     onDisconnect() {
       setUsersNFTs([]); 
@@ -65,6 +70,7 @@ export default function Home() {
             type: 'success',
             message: variables.successMessage
           })
+          resetNFTStatus()
         } else if (!json.success){
           setSnackbar({
               status: true,
@@ -85,6 +91,32 @@ export default function Home() {
       })
   }
 
+  async function hideSelected(){
+    const content = 'HIDE_SELECTED';
+    signMessage({
+        message: content,
+        endPoint: `hideAll`,
+        successMessage: 'Selected NFTs Hidden',
+        errorMessage: 'Action Failed - Please Try Again',
+        data: {
+          nfts: selectedNFTs.map(x => ({token_id: x.token_id, token_address: x.token_address}))
+        }
+    })
+  }
+
+  async function showSelected(){
+    const content = 'SHOW_SELECTED';
+    signMessage({
+        message: content,
+        endPoint: `showSelected`,
+        successMessage: 'Selected NFTs Visible',
+        errorMessage: 'Action Failed - Please Try Again',
+        data: {
+          nfts: selectedNFTs.map(x => ({token_id: x.token_id, token_address: x.token_address}))
+        }
+    })
+  }
+
   async function hideAll(){
       const content = 'HIDEALL';
       signMessage({
@@ -97,6 +129,7 @@ export default function Home() {
           }
       })
   }
+
   async function showAll(){
     const content = 'SHOWALL';
     signMessage({
@@ -130,23 +163,51 @@ async function getLink() {
   copyAddress()
 }
 
+function selectNFT(nft) {
+  const selectedGroup = selectedNFTs;
+  const index = selectedGroup.findIndex(sel => sel.token_address === nft.token_address && sel.token_id === nft.token_id);
+  let list = usersNFTs;
 
-  useEffect(() => {
-    if(usersNFTs){
-      getHiddenList(address)
-      .then( hl => {
-        const list = usersNFTs.map(nft => {
-          if (hl.data.some( h => h.nftAddress == nft.token_address && h.nftId == nft.token_id)){
-            return {...nft, hidden: true};
-          } else {
-            return {...nft, hidden: false};
-          }
-        })
-        setUsersNFTs(list)
-      });
+  if(index > -1){
+    selectedGroup.splice(index, 1); 
+    setSelectedNFTs(selectedGroup);
+    const nftIndex = list.findIndex(l => l.token_address === nft.token_address && l.token_id === nft.token_id);
+    list[nftIndex] = {...list[nftIndex], selected: false} 
+  } else {
+    selectedGroup.push(nft)
+    setSelectedNFTs(selectedGroup);
+  }
+
+  list = list.map(nft => {
+    if (selectedGroup.some( h => h.token_address == nft.token_address && h.token_id == nft.token_id)){
+      return {...nft, selected: true};
+    } else {
+      return nft
     }
-  }, [usersNFTs]);
+  })
+  setUsersNFTs(list);
+}
 
+
+async function setHiddenList(address, nfts) {
+  const hl = await getHiddenList(address);
+  console.log(hl)
+  return nfts.map(nft => {
+    if (hl.data.some( h => h.nftAddress == nft.token_address && h.nftId == nft.token_id)){
+      return {...nft, hidden: true};
+    } else {
+      return {...nft, hidden: false};
+    }
+  })
+}
+
+async function resetNFTStatus() {
+  const nfts = (await setHiddenList(address, usersNFTs))
+    .map(nft => ({...nft, selected: false}))
+  
+  setSelectedNFTs([])
+  setUsersNFTs(nfts);
+}
   // prevents hydration error
   useEffect(() => setMounted(true), []);
   if (!mounted) return null;
@@ -191,7 +252,7 @@ async function getLink() {
             >
             Update Username
             </button>
-
+            
             <button
               className={styles.button}
               onClick={() => hideAll?.()}>
@@ -208,11 +269,27 @@ async function getLink() {
               Copy Shareable Link
             </button>
           </div>)}
+          {
+            selectedNFTs.length > 0 && (
+              <div>
+                <button
+                  className={styles.button}
+                  onClick={() => hideSelected?.()}>
+                  Hide Selected
+                </button>
+
+                <button
+                  className={styles.button}
+                  onClick={() => showSelected?.()}>
+                  Show Selected
+                </button>
+              </div>)
+          }
           <ConnectButton showBalance={false} chainStatus="none" />
         </Grid>
         <Grid sx={{ mt: 2 }}>{loadingImages ? <CircularProgress /> : ""}</Grid>
 
-        <ImageListComponent imageMetadataArray={usersNFTs} showUserAdminUi={true} />
+        <ImageListComponent imageMetadataArray={usersNFTs} showUserAdminUi={true} selectHandler={selectNFT}/>
       </Grid>
     </div>
   );
