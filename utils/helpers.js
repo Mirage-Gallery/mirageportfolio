@@ -1,5 +1,5 @@
 import Moralis from "moralis";
-import { EvmChain } from "@moralisweb3/evm-utils";
+import { EvmChain } from "@moralisweb3/common-evm-utils";
 
 const URL = process.env.NEXT_PUBLIC_URL;
 
@@ -46,7 +46,7 @@ export const getNFTdataByAddress = async (_address, _hiddenList) => {
       address: _address,
     });
 
-    return response.data.result.filter( result => {
+    return response.jsonResponse.result.filter( result => {
       return !_hiddenList
         .some( hidden => hidden.nftAddress == result.token_address && hidden.nftId == result.token_id)
     });
