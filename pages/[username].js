@@ -68,8 +68,8 @@ export default function Home() {
         alignItems="center"
       >
         <Head>
-          <title>NFTGallery</title>
-          <meta name="description" content="NFTGallery" />
+          <title>Mirage Portfolio</title>
+          <meta name="description" content="Mirage Portfolio" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <Grid container justifyContent="flex-end" sx={{ mt: 2, ml: -10}}>
