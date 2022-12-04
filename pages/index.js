@@ -1,7 +1,7 @@
 import Head from "next/head";
 
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { useAccount, useSignMessage } from "wagmi";
+import { useAccount } from "wagmi";
 import { useEffect, useState } from "react";
 
 import ImageListComponent from "./components/ImageListComponent";
@@ -14,7 +14,8 @@ import {
   getNFTdataByAddress,
   getUsernameFromAddress
 } from "../utils/helpers";
-import { RESPONSE_LIMIT_DEFAULT } from "next/dist/server/api-utils";
+
+import { Profile } from "./sign";
 
 const URL = process.env.NEXT_PUBLIC_URL;
 
@@ -50,51 +51,45 @@ export default function Home() {
     },
   });
 
-  const { data: signedMessage, error, isLoading, signMessage } = useSignMessage({
-      async onSuccess(data, variables) {
-        const response = await fetch(`${URL}/api/${variables.endPoint}`, {
-            method: 'POST',
-            cache: 'no-cache',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-              message: variables.message,
-              signedMessage: data,
-              ...variables.data
-            }) 
-        })
-        
-        const json = await response.json();
-        if(json.success) {
-          setSnackbar({
-            status: true,
-            type: 'success',
-            message: variables.successMessage
-          })
-          resetNFTStatus()
-        } else if (!json.success){
-          setSnackbar({
-              status: true,
-              type: 'error',
-              message: variables.errorMessage
-          })
-        }
-      },
+  async function sendAction(data){
+    const response = await fetch(`${URL}/api/${data.endPoint}`, {
+        method: 'POST',
+        cache: 'no-cache',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          ...data.data
+        }) 
     })
+    const json = await response.json();
+    if(json.success) {
+      setSnackbar({
+        status: true,
+        type: 'success',
+        message: data.successMessage
+      })
+      resetNFTStatus()
+    } else if (!json.success){
+      setSnackbar({
+          status: true,
+          type: 'error',
+          message: data.errorMessage
+      })
+    }
+  }
   
   async function sendUpdateUsername(){
-      const content = [address, username].join(':');
-      signMessage({
-        message: content,
+      sendAction({
         endPoint: `setUsername`,
         successMessage: 'Username updated',
-        errorMessage: 'Username is already taken'
+        errorMessage: 'Username is already taken',
+        data: {
+          username: username
+        }
       })
   }
 
   async function hideSelected(){
-    const content = 'HIDE_SELECTED';
-    signMessage({
-        message: content,
+    sendAction({
         endPoint: `hideAll`,
         successMessage: 'Selected NFTs Hidden',
         errorMessage: 'Action Failed - Please Try Again',
@@ -105,9 +100,7 @@ export default function Home() {
   }
 
   async function showSelected(){
-    const content = 'SHOW_SELECTED';
-    signMessage({
-        message: content,
+    sendAction({
         endPoint: `showSelected`,
         successMessage: 'Selected NFTs Visible',
         errorMessage: 'Action Failed - Please Try Again',
@@ -118,9 +111,7 @@ export default function Home() {
   }
 
   async function hideAll(){
-      const content = 'HIDEALL';
-      signMessage({
-          message: content,
+      sendAction({
           endPoint: `hideAll`,
           successMessage: 'All NFTs Hidden',
           errorMessage: 'Action Failed - Please Try Again',
@@ -131,9 +122,7 @@ export default function Home() {
   }
 
   async function showAll(){
-    const content = 'SHOWALL';
-    signMessage({
-        message: content,
+    sendAction({
         endPoint: `showAll`,
         successMessage: 'All NFTs Showing',
         errorMessage: 'Action Failed - Please Try Again',
@@ -201,13 +190,13 @@ async function setHiddenList(address, nfts) {
   })
 }
 
-async function resetNFTStatus() {
-  const nfts = (await setHiddenList(address, usersNFTs))
-    .map(nft => ({...nft, selected: false}))
-  
-  setSelectedNFTs([])
-  setUsersNFTs(nfts);
-}
+  async function resetNFTStatus() {
+    const nfts = (await setHiddenList(address, usersNFTs))
+      .map(nft => ({...nft, selected: false}))
+    
+    setSelectedNFTs([])
+    setUsersNFTs(nfts);
+  }
   // prevents hydration error
   useEffect(() => setMounted(true), []);
   if (!mounted) return null;
@@ -232,6 +221,8 @@ async function resetNFTStatus() {
           <meta name="description" content="NFTGallery" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
+
+        <Profile />
 
         <Snackbar open={snackbar.status} autoHideDuration={3000} onClose={() => setSnackbar(snackbar.status) } anchorOrigin={{...{ vertical: 'top', horizontal: 'center' }}}>
           <Alert severity={snackbar.type} sx={{ width: '100%' }}>{snackbar.message}</Alert>
