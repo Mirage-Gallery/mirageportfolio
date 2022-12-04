@@ -5,7 +5,7 @@ import { useAccount } from "wagmi";
 import { useEffect, useState } from "react";
 
 import ImageListComponent from "./components/ImageListComponent";
-import { SignInButton } from "./components/SignIn";
+import SignInButton from "./components/SignIn";
 
 import { CircularProgress, Grid, Snackbar, Alert} from "@mui/material";
 import { useTheme } from "@mui/material/styles";
