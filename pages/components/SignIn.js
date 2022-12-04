@@ -3,7 +3,7 @@ import { useAccount, useNetwork, useSignMessage } from 'wagmi'
 import { SiweMessage } from 'siwe'
 import styles from '../../styles/Home.module.css';
 
-export function SignInButton() {
+export default function SignInButton() {
   const [state, setState] = React.useState({})
  
   const fetchNonce = async () => {
