@@ -5,6 +5,8 @@ import { useAccount } from "wagmi";
 import { useEffect, useState } from "react";
 
 import ImageListComponent from "./components/ImageListComponent";
+import { SignInButton } from "./components/SignIn";
+
 import { CircularProgress, Grid, Snackbar, Alert} from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import styles from '../styles/Home.module.css';
@@ -15,18 +17,19 @@ import {
   getUsernameFromAddress
 } from "../utils/helpers";
 
-import { Profile } from "./sign";
+
 
 const URL = process.env.NEXT_PUBLIC_URL;
 
 export default function Home() {
+  const theme = useTheme();
   const [usersNFTs, setUsersNFTs] = useState([]);
   const [mounted, setMounted] = useState(false);
   const [loadingImages, setLoadingImages] = useState(false);
-  const theme = useTheme();
   const [username, setUsername] = useState('');
   const [snackbar, setSnackbar] = useState({ status: false});
   const [selectedNFTs, setSelectedNFTs] = useState([]);
+  const [ethAuth, setEthAuth] = useState({})
 
   
   const { address, isConnected } = useAccount({
@@ -197,9 +200,28 @@ async function setHiddenList(address, nfts) {
     setSelectedNFTs([])
     setUsersNFTs(nfts);
   }
+
+  useEffect(() => {
+    const handler = async () => {
+      try {
+        const res = await fetch('/api/me')
+        const json = await res.json()
+        setEthAuth((x) => ({ ...x, address: json.address }))
+      } catch (_error) {}
+    }
+    // 1. page loads
+    handler()
+ 
+    // 2. window is focused (in case user logs out of another window)
+    window.addEventListener('focus', handler)
+    return () => window.removeEventListener('focus', handler)
+  }, [])
+
   // prevents hydration error
   useEffect(() => setMounted(true), []);
   if (!mounted) return null;
+
+
 
   return (
     <div
@@ -222,14 +244,12 @@ async function setHiddenList(address, nfts) {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Profile />
-
         <Snackbar open={snackbar.status} autoHideDuration={3000} onClose={() => setSnackbar(snackbar.status) } anchorOrigin={{...{ vertical: 'top', horizontal: 'center' }}}>
           <Alert severity={snackbar.type} sx={{ width: '100%' }}>{snackbar.message}</Alert>
         </Snackbar>
 
         <Grid container justifyContent="flex-end" sx={{ mt: 2, ml: -10}}>
-          { isConnected && (
+          { ethAuth.address && (
           <div>
             <input
               className={styles.input}
@@ -261,7 +281,7 @@ async function setHiddenList(address, nfts) {
             </button>
           </div>)}
           {
-            selectedNFTs.length > 0 && (
+            ethAuth.address && selectedNFTs.length > 0 && (
               <div>
                 <button
                   className={styles.button}
@@ -276,7 +296,33 @@ async function setHiddenList(address, nfts) {
                 </button>
               </div>)
           }
+          
           <ConnectButton showBalance={false} chainStatus="none" />
+           
+          { isConnected && (
+              <div>
+                {ethAuth.address ? (
+                    <button
+                      className={styles.button}
+                      onClick={async () => {
+                        await fetch('/api/logout')
+                        setEthAuth({})
+                      }}
+                      style={{
+                        marginLeft: '1rem',
+                      }}
+                    >
+                      Sign Out - {ethAuth.address.slice(0, 5)}
+                    </button>
+                ) : (
+                  <SignInButton
+                    onSuccess={({ address }) => setEthAuth((x) => ({ ...x, address }))}
+                    onError={({ error }) => setEthAuth((x) => ({ ...x, error }))}
+                  />
+                )}
+              </div>
+            )}
+          
         </Grid>
         <Grid sx={{ mt: 2 }}>{loadingImages ? <CircularProgress /> : ""}</Grid>
 

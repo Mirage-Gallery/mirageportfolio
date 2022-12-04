@@ -1,8 +1,9 @@
 import * as React from 'react'
 import { useAccount, useNetwork, useSignMessage } from 'wagmi'
 import { SiweMessage } from 'siwe'
- 
-function SignInButton() {
+import styles from '../../styles/Home.module.css';
+
+export function SignInButton() {
   const [state, setState] = React.useState({})
  
   const fetchNonce = async () => {
@@ -36,7 +37,7 @@ function SignInButton() {
       const message = new SiweMessage({
         domain: window.location.host,
         address,
-        statement: 'Sign in with Ethereum to the app.',
+        statement: 'Sign in with Ethereum to Mirage Gallery.',
         uri: window.location.origin,
         version: '1',
         chainId,
@@ -64,57 +65,5 @@ function SignInButton() {
     }
   }
  
-  return (<button disabled={!state.nonce || state.loading} onClick={signIn}> Sign-In with Ethereum</button>)
-}
- 
-export function Profile() {
-  const { isConnected } = useAccount()
- 
-  const [state, setState] = React.useState({})
- 
-  // Fetch user when:
-  React.useEffect(() => {
-    const handler = async () => {
-      try {
-        const res = await fetch('/api/me')
-        const json = await res.json()
-        setState((x) => ({ ...x, address: json.address }))
-      } catch (_error) {}
-    }
-    // 1. page loads
-    handler()
- 
-    // 2. window is focused (in case user logs out of another window)
-    window.addEventListener('focus', handler)
-    return () => window.removeEventListener('focus', handler)
-  }, [])
- 
-  if (isConnected) {
-    return (
-      <div>
-        {/* Account content goes here */}
- 
-        {state.address ? (
-          <div>
-            <div>Signed in as {state.address}</div>
-            <button
-              onClick={async () => {
-                await fetch('/api/logout')
-                setState({})
-              }}
-            >
-              Sign Out
-            </button>
-          </div>
-        ) : (
-          <SignInButton
-            onSuccess={({ address }) => setState((x) => ({ ...x, address }))}
-            onError={({ error }) => setState((x) => ({ ...x, error }))}
-          />
-        )}
-      </div>
-    )
-  }
- 
-  return <div>{/* Connect wallet content goes here */}</div>
+  return (<button style={{marginLeft: '1rem'}} className={styles.button} disabled={!state.nonce || state.loading} onClick={signIn}> Sign-In with Ethereum</button>)
 }
