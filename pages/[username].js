@@ -3,8 +3,6 @@ import Head from "next/head";
 import { useEffect, useState } from "react";
 import { useRouter } from 'next/router'
 
-import Moralis from "moralis";
-import { EvmChain } from "@moralisweb3/evm-utils";
 import ImageListComponent from "./components/ImageListComponent";
 import { CircularProgress, Grid } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
