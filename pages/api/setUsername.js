@@ -1,4 +1,5 @@
 const { createClient } =  require('@supabase/supabase-js')
+import { withIronSessionApiRoute } from 'iron-session/next'
 import { ironOptions } from "../../lib/config";
 
 const {
