@@ -65,5 +65,5 @@ export default function SignInButton() {
     }
   }
  
-  return (<button style={{marginLeft: '1rem'}} className={styles.button} disabled={!state.nonce || state.loading} onClick={signIn}> Sign-In with Ethereum</button>)
+  return (<button style={{marginLeft: '1rem'}} className={styles.button} disabled={!state.nonce || state.loading} onClick={signIn}>Create Portfolio</button>)
 }
