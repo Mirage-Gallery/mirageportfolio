@@ -10,6 +10,7 @@ import UserAdminUi from './UserAdminUi'
 function ImageListItemComponent({ imgData, showUserAdminUi, selectHandler }) {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
+  const [imgAvailable, setImgAvailable] = useState(true);
   const handleOpen = () => {
     setOpen(true);
   };
@@ -17,7 +18,7 @@ function ImageListItemComponent({ imgData, showUserAdminUi, selectHandler }) {
 
   const {title, img, video, address, id, hidden, selected } = imgData || { title: '', img: '', video: false, address : '', id: null, hidden: null, selected: null}
   return (
-    <ImageListItem cols={1}>
+    imgAvailable && <ImageListItem cols={1}>
       {showUserAdminUi && (
       <button
           onClick={() => selectHandler({token_id: id, token_address: address})}
@@ -54,7 +55,7 @@ function ImageListItemComponent({ imgData, showUserAdminUi, selectHandler }) {
         onClick={handleOpen}
         onError={({ currentTarget }) => {
           currentTarget.onerror = null; 
-          currentTarget.parentNode.style.display = "none";
+          setImgAvailable(false)
         }}
       />
       {video ? (
@@ -68,6 +69,10 @@ function ImageListItemComponent({ imgData, showUserAdminUi, selectHandler }) {
             color: "#FFFFFF",
           }}
           onClick={handleOpen}
+          onError={({ currentTarget }) => {
+            currentTarget.onerror = null; 
+            setImgAvailable(false)
+          }}
         />
       ) : (
         ""
