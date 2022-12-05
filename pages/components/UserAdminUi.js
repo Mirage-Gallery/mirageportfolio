@@ -1,4 +1,3 @@
-import { useSignMessage } from "wagmi";
 import React from "react";
 
 const URL = process.env.NEXT_PUBLIC_URL;
@@ -6,34 +5,35 @@ const URL = process.env.NEXT_PUBLIC_URL;
 function UserAdminUi({imgData}) {
     const {address: tokenAddress , id : tokenId, hidden} =  imgData || { address : ''}
 
-    const { data: signedMessage, error, isLoading, signMessage } = useSignMessage({
-        async onSuccess(data, variables) {
-          const response = await fetch(variables.endPoint, {
-              method: 'POST',
-              cache: 'no-cache',
-              headers: {'Content-Type': 'application/json'},
-              body: JSON.stringify({
-                message: variables.message,
-                signedMessage: data
-              }) 
-          })
-          const json = await response.json();
-        },
-      })
+    async function sendAction(data) {
+        const response = await fetch(`${URL}/api/${data.endPoint}`, {
+            method: 'POST',
+            cache: 'no-cache',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                ...data.data
+            }) 
+        })
+        const json = await response.json();
+    }
       
     async function hide(){
-        const content = [tokenAddress, tokenId].join(':');
-        signMessage({
-            message: content,
-            endPoint: `${URL}/api/hideItem`
+        sendAction({
+            data: {
+                tokenAddress,
+                tokenId
+            },
+            endPoint: `hideItem`
         })
     }
 
     async function unhide(){
-        const content = [tokenAddress, tokenId].join(':');
-        signMessage({
-            message: content,
-            endPoint: `${URL}/api/showItem`
+        sendAction({
+            data: {
+                tokenAddress,
+                tokenId
+            },
+            endPoint: `showItem`,
         })
     }
       

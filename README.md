@@ -17,6 +17,7 @@ NEXT_PUBLIC_DB_USERNAME_TABLE="projectname"
 NEXT_PUBLIC_URL="http://localhost:3000"
 SUPABASE_SERVICE_API_KEY="key"
 DATABASE_URL="url"
+SESSION_KEY="min-32-char-password"
 ```
 
 Then, run the development server:

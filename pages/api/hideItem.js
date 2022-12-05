@@ -1,5 +1,7 @@
 const { createClient } =  require('@supabase/supabase-js')
-import { ethers } from 'ethers';
+import { withIronSessionApiRoute } from 'iron-session/next'
+import { ironOptions } from "../../lib/config";
+
 
 const {
   DATABASE_URL,
@@ -8,21 +10,17 @@ const {
 
 const supabase = createClient(DATABASE_URL, SUPABASE_SERVICE_API_KEY);
 
-export default async function handler(req, res) {
+async function handler(req, res) {
 
-    const { message, signedMessage } = req.body
-
-    const signerAddress = ethers.utils.verifyMessage(message, signedMessage);
-    const data = message.split(':')
-    const nftAddress = data[0]
-    const nftId = data[1]
+    const { tokenId, tokenAddress } = req.body
+    const signerAddress = req.session.siwe?.address
     
     const {data: result, error} = await supabase
         .from('hidden')
         .insert({
             address: signerAddress,
-            nftAddress,
-            nftId
+            nftAddress: tokenAddress,
+            nftId: tokenId
         })
         
     if (!error) {
@@ -31,3 +29,4 @@ export default async function handler(req, res) {
         res.status(500).json( { success: false })
     }
 }
+export default withIronSessionApiRoute(handler, ironOptions)

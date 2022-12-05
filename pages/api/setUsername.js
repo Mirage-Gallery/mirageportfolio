@@ -1,5 +1,6 @@
 const { createClient } =  require('@supabase/supabase-js')
-import { ethers } from 'ethers';
+import { withIronSessionApiRoute } from 'iron-session/next'
+import { ironOptions } from "../../lib/config";
 
 const {
   DATABASE_URL,
@@ -8,11 +9,10 @@ const {
 
 const supabase = createClient(DATABASE_URL, SUPABASE_SERVICE_API_KEY);
 
-export default async function handler(req, res) {
-    const { message, signedMessage } = req.body
+async function handler(req, res) {
+    const { username } = req.body
 
-    const signerAddress = ethers.utils.verifyMessage(message, signedMessage);
-    const username = message.split(':')[1]
+    const signerAddress = req.session.siwe?.address
 
     const {data: usernameExists} = await supabase
         .from('username')
@@ -36,3 +36,4 @@ export default async function handler(req, res) {
         res.status(500).json( { success: false })
     }
 }
+export default withIronSessionApiRoute(handler, ironOptions)
